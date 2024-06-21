@@ -1,23 +1,45 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 function App() {
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    fetch('https://fakestoreapi.com/products')
+      .then(response => response.json())
+      .then(data => setProducts(data))
+      .catch(error => console.error('Error fetching data:', error));
+  }, []);
+
+  const handleBuyClick = (product) => {
+    // Handle the buy button click event
+    console.log(`Buying product: ${product.title}`);
+    // Add your buy logic here
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='App'>
+      <div className='product-grid'>
+        {products.length > 0 ? (
+          products.map(product => (
+            <div className='card' key={product.id}>
+              <div className='card-inner'>
+                <div className='card-front'>
+                  <img src={product.image} alt={product.title} />
+                </div>
+                <div className='card-back'>
+                  <h1>{product.title}</h1>
+                  <p>{product.description}</p>
+                  <p>Price: ${product.price}</p>
+                  <button onClick={() => handleBuyClick(product)}>Buy</button>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p>Loading...</p>
+        )}
+      </div>
     </div>
   );
 }
